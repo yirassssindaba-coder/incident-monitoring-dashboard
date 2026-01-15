@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+
+{% block title %}Daftar Insiden - IT Incident Management{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="page-header-content">
+        <h1>Daftar Insiden</h1>
+        <a href="{{ url_for('create_incident') }}" class="btn btn-primary">+ Buat Insiden</a>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <form class="filter-form" method="GET" action="{{ url_for('incidents_list') }}">
+            <div class="filter-row">
+                <div class="filter-group">
+                    <label for="search">Cari</label>
+                    <input type="text" id="search" name="search" placeholder="Cari judul atau deskripsi..." value="{{ search }}">
+                </div>
+                <div class="filter-group">
+                    <label for="status">Status</label>
+                    <select id="status" name="status">
+                        <option value="">Semua Status</option>
+                        {% for status in status_options %}
+                            <option value="{{ status }}" {% if current_status == status %}selected{% endif %}>{{ status }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="severity">Severity</label>
+                    <select id="severity" name="severity">
+                        <option value="">Semua Severity</option>
+                        {% for severity in severity_levels %}
+                            <option value="{{ severity }}" {% if current_severity == severity %}selected{% endif %}>{{ severity }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="filter-actions">
+                    <button type="submit" class="btn btn-primary">Filter</button>
+                    <a href="{{ url_for('incidents_list') }}" class="btn btn-outline">Reset</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h2>Hasil: {{ incidents|length }} insiden</h2>
+        <a href="{{ url_for('export_csv') }}" class="btn btn-sm btn-outline">📥 Export CSV</a>
+    </div>
+    <div class="card-body">
+        {% if incidents %}
+            <div class="table-responsive">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Judul</th>
+                            <th>Kategori</th>
+                            <th>Severity</th>
+                            <th>Status</th>
+                            <th>Dibuat</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for incident in incidents %}
+                            <tr>
+                                <td><span class="incident-id">#{{ incident.id }}</span></td>
+                                <td>
+                                    <a href="{{ url_for('incident_detail', id=incident.id) }}" class="incident-link">
+                                        {{ incident.title[:50] }}{% if incident.title|length > 50 %}...{% endif %}
+                                    </a>
+                                </td>
+                                <td>{{ incident.category }}</td>
+                                <td><span class="badge badge-severity-{{ incident.severity|lower }}">{{ incident.severity }}</span></td>
+                                <td><span class="badge badge-status-{{ incident.status|lower|replace(' ', '-') }}">{{ incident.status }}</span></td>
+                                <td class="date-cell">{{ incident.created_at[:16] }}</td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <a href="{{ url_for('incident_detail', id=incident.id) }}" class="btn btn-xs btn-outline">Detail</a>
+                                        <a href="{{ url_for('edit_incident', id=incident.id) }}" class="btn btn-xs btn-primary">Edit</a>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <div class="empty-icon">📋</div>
+                <h3>Tidak Ada Insiden</h3>
+                {% if search or current_status or current_severity %}
+                    <p>Tidak ada insiden yang sesuai dengan filter. Coba ubah kriteria pencarian.</p>
+                    <a href="{{ url_for('incidents_list') }}" class="btn btn-outline">Reset Filter</a>
+                {% else %}
+                    <p>Belum ada insiden tercatat dalam sistem.</p>
+                    <a href="{{ url_for('create_incident') }}" class="btn btn-primary">+ Buat Insiden Pertama</a>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<div class="incidents-mobile">
+    {% if incidents %}
+        {% for incident in incidents %}
+            <a href="{{ url_for('incident_detail', id=incident.id) }}" class="incident-card-mobile">
+                <div class="incident-card-header">
+                    <span class="incident-id">#{{ incident.id }}</span>
+                    <span class="badge badge-severity-{{ incident.severity|lower }}">{{ incident.severity }}</span>
+                </div>
+                <h3 class="incident-card-title">{{ incident.title }}</h3>
+                <div class="incident-card-meta">
+                    <span class="badge badge-status-{{ incident.status|lower|replace(' ', '-') }}">{{ incident.status }}</span>
+                    <span class="incident-date">{{ incident.created_at[:10] }}</span>
+                </div>
+            </a>
+        {% endfor %}
+    {% endif %}
+</div>
+{% endblock %}

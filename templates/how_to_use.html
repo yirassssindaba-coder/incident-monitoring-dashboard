@@ -1,0 +1,193 @@
+{% extends "base.html" %}
+
+{% block title %}Panduan Penggunaan - IT Incident Management{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Panduan Penggunaan</h1>
+    <p class="page-subtitle">Cara menggunakan sistem IT Incident Management Dashboard</p>
+</div>
+
+<div class="guide-container">
+    <div class="card">
+        <div class="card-header">
+            <h2>1. Membuat Insiden Baru</h2>
+        </div>
+        <div class="card-body">
+            <ol class="guide-steps">
+                <li>Klik tombol <strong>"+ New Incident"</strong> di menu navigasi atau <strong>"+ Buat Insiden"</strong> di halaman Incidents</li>
+                <li>Isi form dengan informasi:
+                    <ul>
+                        <li><strong>Judul:</strong> Deskripsi singkat masalah (minimal 3 karakter)</li>
+                        <li><strong>Deskripsi:</strong> Detail lengkap insiden, gejala, dan dampaknya</li>
+                        <li><strong>Kategori:</strong> Pilih kategori yang sesuai (Hardware, Software, Network, dll)</li>
+                        <li><strong>Severity:</strong> Tingkat keparahan (Low, Medium, High, Critical)</li>
+                        <li><strong>SLA Target:</strong> Batas waktu penyelesaian dalam jam (default 24 jam)</li>
+                    </ul>
+                </li>
+                <li>Klik <strong>"Buat Insiden"</strong> untuk menyimpan</li>
+            </ol>
+        </div>
+    </div>
+    
+    <div class="card">
+        <div class="card-header">
+            <h2>2. Memperbarui Status Insiden</h2>
+        </div>
+        <div class="card-body">
+            <p>Ada dua cara untuk memperbarui status:</p>
+            <div class="guide-options">
+                <div class="guide-option">
+                    <h4>Quick Update (Cepat)</h4>
+                    <ol class="guide-steps">
+                        <li>Buka halaman detail insiden</li>
+                        <li>Di sidebar kanan, pilih status baru dari dropdown</li>
+                        <li>Klik <strong>"Update Status"</strong></li>
+                    </ol>
+                </div>
+                <div class="guide-option">
+                    <h4>Full Edit (Lengkap)</h4>
+                    <ol class="guide-steps">
+                        <li>Buka halaman detail insiden</li>
+                        <li>Klik tombol <strong>"Edit"</strong></li>
+                        <li>Perbarui semua informasi yang diperlukan</li>
+                        <li>Klik <strong>"Simpan Perubahan"</strong></li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="card">
+        <div class="card-header">
+            <h2>3. Mengisi RCA dan Resolusi</h2>
+        </div>
+        <div class="card-body">
+            <ol class="guide-steps">
+                <li>Buka halaman detail insiden yang ingin diupdate</li>
+                <li>Klik tombol <strong>"Edit"</strong></li>
+                <li>Scroll ke bagian <strong>"Resolusi & RCA"</strong></li>
+                <li>Isi field:
+                    <ul>
+                        <li><strong>Downtime:</strong> Total waktu sistem tidak tersedia (dalam menit)</li>
+                        <li><strong>Root Cause Analysis:</strong> Penjelasan penyebab utama masalah</li>
+                        <li><strong>Resolusi:</strong> Langkah-langkah yang dilakukan untuk menyelesaikan masalah</li>
+                    </ul>
+                </li>
+                <li>Ubah status menjadi <strong>"Resolved"</strong> atau <strong>"Closed"</strong></li>
+                <li>Klik <strong>"Simpan Perubahan"</strong></li>
+            </ol>
+            <div class="guide-note">
+                <strong>Catatan:</strong> Saat status diubah menjadi Resolved/Closed, sistem akan otomatis mencatat waktu resolusi dan menghitung apakah SLA terpenuhi.
+            </div>
+        </div>
+    </div>
+    
+    <div class="card">
+        <div class="card-header">
+            <h2>4. Memahami Perhitungan SLA</h2>
+        </div>
+        <div class="card-body">
+            <p>SLA (Service Level Agreement) menghitung waktu penyelesaian insiden:</p>
+            <div class="guide-formula">
+                <strong>SLA Terpenuhi</strong> = Waktu Resolusi ≤ SLA Target
+            </div>
+            <ul class="guide-list">
+                <li><strong>SLA Target:</strong> Ditentukan saat membuat insiden (default 24 jam)</li>
+                <li><strong>Waktu Resolusi:</strong> Dihitung dari waktu dibuat hingga status menjadi Resolved/Closed</li>
+                <li><strong>SLA Compliance:</strong> Persentase insiden yang diselesaikan dalam batas SLA</li>
+            </ul>
+            <div class="sla-examples">
+                <div class="sla-example success">
+                    <span class="sla-icon">✓</span>
+                    <div>
+                        <strong>SLA Terpenuhi</strong>
+                        <p>Insiden dengan target 24 jam diselesaikan dalam 18 jam</p>
+                    </div>
+                </div>
+                <div class="sla-example danger">
+                    <span class="sla-icon">✗</span>
+                    <div>
+                        <strong>SLA Terlewati</strong>
+                        <p>Insiden dengan target 4 jam diselesaikan dalam 6 jam</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="card">
+        <div class="card-header">
+            <h2>5. Export Laporan CSV</h2>
+        </div>
+        <div class="card-body">
+            <ol class="guide-steps">
+                <li>Ada beberapa cara mengakses export:
+                    <ul>
+                        <li>Dari Dashboard: Klik <strong>"Export CSV"</strong> di Quick Actions</li>
+                        <li>Dari halaman Incidents: Klik tombol <strong>"📥 Export CSV"</strong></li>
+                    </ul>
+                </li>
+                <li>File CSV akan otomatis terdownload</li>
+                <li>Buka file dengan Microsoft Excel, Google Sheets, atau aplikasi spreadsheet lainnya</li>
+            </ol>
+            <div class="guide-note">
+                <strong>Data yang diekspor:</strong> ID, Judul, Deskripsi, Kategori, Severity, Status, Pelapor, Assigned To, Tanggal Dibuat/Update/Resolved, Downtime, RCA, Resolusi, SLA Target, dan Status SLA.
+            </div>
+        </div>
+    </div>
+    
+    <div class="card">
+        <div class="card-header">
+            <h2>6. Filter dan Pencarian</h2>
+        </div>
+        <div class="card-body">
+            <p>Di halaman Incidents, Anda dapat memfilter data berdasarkan:</p>
+            <ul class="guide-list">
+                <li><strong>Pencarian Teks:</strong> Cari berdasarkan judul atau deskripsi</li>
+                <li><strong>Status:</strong> Filter berdasarkan Open, In Progress, Pending, Resolved, atau Closed</li>
+                <li><strong>Severity:</strong> Filter berdasarkan Low, Medium, High, atau Critical</li>
+            </ul>
+            <p>Klik <strong>"Reset"</strong> untuk menghapus semua filter.</p>
+        </div>
+    </div>
+    
+    <div class="card guide-tips">
+        <div class="card-header">
+            <h2>Tips Penggunaan</h2>
+        </div>
+        <div class="card-body">
+            <div class="tips-grid">
+                <div class="tip-item">
+                    <span class="tip-icon">💡</span>
+                    <div>
+                        <strong>Severity Guide</strong>
+                        <p>Low: gangguan minor, High: dampak signifikan, Critical: sistem down total</p>
+                    </div>
+                </div>
+                <div class="tip-item">
+                    <span class="tip-icon">⏱️</span>
+                    <div>
+                        <strong>SLA Tips</strong>
+                        <p>Sesuaikan SLA target berdasarkan severity. Critical biasanya 4 jam, Low bisa 72 jam</p>
+                    </div>
+                </div>
+                <div class="tip-item">
+                    <span class="tip-icon">📝</span>
+                    <div>
+                        <strong>RCA Best Practice</strong>
+                        <p>Jelaskan akar masalah, bukan hanya gejalanya. Gunakan teknik "5 Whys"</p>
+                    </div>
+                </div>
+                <div class="tip-item">
+                    <span class="tip-icon">📊</span>
+                    <div>
+                        <strong>Dashboard Monitoring</strong>
+                        <p>Pantau SLA Compliance secara rutin. Target ideal adalah di atas 95%</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

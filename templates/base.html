@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}IT Incident Management{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="{{ url_for('dashboard') }}" class="nav-brand">
+                <span class="brand-icon">🖥️</span>
+                <span class="brand-text">IT Incident Manager</span>
+            </a>
+            <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="{{ url_for('dashboard') }}" class="nav-link {% if request.endpoint == 'dashboard' %}active{% endif %}">Dashboard</a></li>
+                <li><a href="{{ url_for('incidents_list') }}" class="nav-link {% if request.endpoint in ['incidents_list', 'incident_detail', 'edit_incident'] %}active{% endif %}">Incidents</a></li>
+                <li><a href="{{ url_for('create_incident') }}" class="nav-link btn-nav {% if request.endpoint == 'create_incident' %}active{% endif %}">+ New Incident</a></li>
+                <li><a href="{{ url_for('how_to_use') }}" class="nav-link {% if request.endpoint == 'how_to_use' %}active{% endif %}">How to Use</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="container">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="flash-messages">
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }}">
+                                {{ message }}
+                                <button class="alert-close" onclick="this.parentElement.remove()">&times;</button>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+            
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>IT Incident Management Dashboard &copy; 2024 | System Monitoring & SLA Tracking</p>
+        </div>
+    </footer>
+
+    <script>
+        document.getElementById('navToggle').addEventListener('click', function() {
+            document.getElementById('navMenu').classList.toggle('active');
+            this.classList.toggle('active');
+        });
+        
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                document.getElementById('navMenu').classList.remove('active');
+                document.getElementById('navToggle').classList.remove('active');
+            });
+        });
+    </script>
+</body>
+</html>

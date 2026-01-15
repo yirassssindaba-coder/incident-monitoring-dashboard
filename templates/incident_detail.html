@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+
+{% block title %}Insiden #{{ incident.id }} - IT Incident Management{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="page-header-content">
+        <div>
+            <h1>Insiden #{{ incident.id }}</h1>
+            <p class="page-subtitle">{{ incident.title }}</p>
+        </div>
+        <div class="header-actions">
+            <a href="{{ url_for('edit_incident', id=incident.id) }}" class="btn btn-primary">Edit</a>
+            <a href="{{ url_for('incidents_list') }}" class="btn btn-outline">Kembali</a>
+        </div>
+    </div>
+</div>
+
+<div class="detail-grid">
+    <div class="card detail-main">
+        <div class="card-header">
+            <h2>Detail Insiden</h2>
+            <div class="badge-group">
+                <span class="badge badge-severity-{{ incident.severity|lower }} large">{{ incident.severity }}</span>
+                <span class="badge badge-status-{{ incident.status|lower|replace(' ', '-') }} large">{{ incident.status }}</span>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="detail-section">
+                <h3>Deskripsi</h3>
+                {% if incident.description %}
+                    <p class="description-text">{{ incident.description }}</p>
+                {% else %}
+                    <p class="text-muted">Tidak ada deskripsi</p>
+                {% endif %}
+            </div>
+            
+            <div class="detail-grid-info">
+                <div class="detail-item">
+                    <span class="detail-label">Kategori</span>
+                    <span class="detail-value">{{ incident.category }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Dilaporkan Oleh</span>
+                    <span class="detail-value">{{ incident.reported_by or '-' }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Ditugaskan Kepada</span>
+                    <span class="detail-value">{{ incident.assigned_to or '-' }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Downtime</span>
+                    <span class="detail-value">{{ incident.downtime_minutes }} menit</span>
+                </div>
+            </div>
+            
+            {% if incident.root_cause %}
+            <div class="detail-section">
+                <h3>Root Cause Analysis</h3>
+                <p class="description-text">{{ incident.root_cause }}</p>
+            </div>
+            {% endif %}
+            
+            {% if incident.resolution %}
+            <div class="detail-section">
+                <h3>Resolusi</h3>
+                <p class="description-text">{{ incident.resolution }}</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <div class="detail-sidebar">
+        <div class="card">
+            <div class="card-header">
+                <h3>SLA Status</h3>
+            </div>
+            <div class="card-body">
+                <div class="sla-status {% if sla_met %}sla-met{% else %}sla-breached{% endif %}">
+                    <span class="sla-icon">{% if sla_met %}✓{% else %}✗{% endif %}</span>
+                    <span class="sla-text">{% if sla_met %}SLA Terpenuhi{% else %}SLA Terlewati{% endif %}</span>
+                </div>
+                <div class="sla-info">
+                    <div class="sla-item">
+                        <span>Target:</span>
+                        <strong>{{ incident.sla_target_hours }} jam</strong>
+                    </div>
+                    {% if incident.sla_breached %}
+                        <div class="sla-item warning">
+                            <span>Status:</span>
+                            <strong>Breached</strong>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <h3>Timeline</h3>
+            </div>
+            <div class="card-body">
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <span class="timeline-label">Dibuat:</span>
+                        <span class="timeline-value">{{ incident.created_at }}</span>
+                    </div>
+                    <div class="timeline-item">
+                        <span class="timeline-label">Diperbarui:</span>
+                        <span class="timeline-value">{{ incident.updated_at }}</span>
+                    </div>
+                    {% if incident.resolved_at %}
+                    <div class="timeline-item">
+                        <span class="timeline-label">Diselesaikan:</span>
+                        <span class="timeline-value">{{ incident.resolved_at }}</span>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <h3>Quick Update Status</h3>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('update_status', id=incident.id) }}" class="status-form">
+                    <select name="status" class="form-control">
+                        {% for st in status_options %}
+                            <option value="{{ st }}" {% if incident.status == st %}selected{% endif %}>{{ st }}</option>
+                        {% endfor %}
+                    </select>
+                    <button type="submit" class="btn btn-primary btn-block">Update Status</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

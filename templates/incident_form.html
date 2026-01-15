@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+
+{% block title %}{% if mode == 'create' %}Buat Insiden Baru{% else %}Edit Insiden{% endif %} - IT Incident Management{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>{% if mode == 'create' %}Buat Insiden Baru{% else %}Edit Insiden #{{ incident.id }}{% endif %}</h1>
+    <p class="page-subtitle">{% if mode == 'create' %}Isi form di bawah untuk mencatat insiden baru{% else %}Perbarui informasi insiden{% endif %}</p>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <form method="POST" class="incident-form">
+            {% if mode == 'edit' %}
+                <input type="hidden" name="old_status" value="{{ incident.status }}">
+            {% endif %}
+            
+            <div class="form-section">
+                <h3>Informasi Dasar</h3>
+                <div class="form-grid">
+                    <div class="form-group full-width">
+                        <label for="title">Judul Insiden <span class="required">*</span></label>
+                        <input type="text" id="title" name="title" required minlength="3" 
+                               value="{{ incident.title if incident else '' }}"
+                               placeholder="Contoh: Server database tidak merespons">
+                        <small class="form-hint">Minimal 3 karakter, jelaskan masalah secara singkat</small>
+                    </div>
+                    
+                    <div class="form-group full-width">
+                        <label for="description">Deskripsi</label>
+                        <textarea id="description" name="description" rows="4" 
+                                  placeholder="Jelaskan detail insiden, gejala, dan dampak...">{{ incident.description if incident else '' }}</textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="category">Kategori <span class="required">*</span></label>
+                        <select id="category" name="category" required>
+                            {% for cat in category_options %}
+                                <option value="{{ cat }}" {% if incident and incident.category == cat %}selected{% endif %}>{{ cat }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="severity">Severity <span class="required">*</span></label>
+                        <select id="severity" name="severity" required>
+                            {% for sev in severity_levels %}
+                                <option value="{{ sev }}" {% if incident and incident.severity == sev %}selected{% endif %}>{{ sev }}</option>
+                            {% endfor %}
+                        </select>
+                        <small class="form-hint">Low: minor issue, Critical: sistem down</small>
+                    </div>
+                    
+                    {% if mode == 'edit' %}
+                    <div class="form-group">
+                        <label for="status">Status <span class="required">*</span></label>
+                        <select id="status" name="status" required>
+                            {% for st in status_options %}
+                                <option value="{{ st }}" {% if incident and incident.status == st %}selected{% endif %}>{{ st }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    {% endif %}
+                    
+                    <div class="form-group">
+                        <label for="sla_target_hours">SLA Target (jam)</label>
+                        <input type="number" id="sla_target_hours" name="sla_target_hours" min="1" max="720"
+                               value="{{ incident.sla_target_hours if incident else 24 }}">
+                        <small class="form-hint">Batas waktu penyelesaian insiden</small>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-section">
+                <h3>Penugasan</h3>
+                <div class="form-grid">
+                    {% if mode == 'create' %}
+                    <div class="form-group">
+                        <label for="reported_by">Dilaporkan Oleh</label>
+                        <input type="text" id="reported_by" name="reported_by" 
+                               value="{{ incident.reported_by if incident else '' }}"
+                               placeholder="Nama pelapor">
+                    </div>
+                    {% endif %}
+                    
+                    <div class="form-group">
+                        <label for="assigned_to">Ditugaskan Kepada</label>
+                        <input type="text" id="assigned_to" name="assigned_to" 
+                               value="{{ incident.assigned_to if incident else '' }}"
+                               placeholder="Nama teknisi">
+                    </div>
+                </div>
+            </div>
+            
+            {% if mode == 'edit' %}
+            <div class="form-section">
+                <h3>Resolusi & RCA</h3>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="downtime_minutes">Downtime (menit)</label>
+                        <input type="number" id="downtime_minutes" name="downtime_minutes" min="0"
+                               value="{{ incident.downtime_minutes if incident else 0 }}">
+                        <small class="form-hint">Total waktu sistem tidak tersedia</small>
+                    </div>
+                    
+                    <div class="form-group full-width">
+                        <label for="root_cause">Root Cause Analysis (RCA)</label>
+                        <textarea id="root_cause" name="root_cause" rows="3" 
+                                  placeholder="Jelaskan penyebab utama masalah...">{{ incident.root_cause if incident else '' }}</textarea>
+                    </div>
+                    
+                    <div class="form-group full-width">
+                        <label for="resolution">Resolusi</label>
+                        <textarea id="resolution" name="resolution" rows="3" 
+                                  placeholder="Jelaskan langkah-langkah penyelesaian yang dilakukan...">{{ incident.resolution if incident else '' }}</textarea>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            
+            <div class="form-actions">
+                <a href="{% if mode == 'edit' %}{{ url_for('incident_detail', id=incident.id) }}{% else %}{{ url_for('incidents_list') }}{% endif %}" class="btn btn-outline">Batal</a>
+                <button type="submit" class="btn btn-primary">
+                    {% if mode == 'create' %}Buat Insiden{% else %}Simpan Perubahan{% endif %}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
