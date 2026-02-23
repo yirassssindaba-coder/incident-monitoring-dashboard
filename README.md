@@ -1,131 +1,119 @@
-# System Monitoring & Incident Management Dashboard
+<div align="center">
 
-## 📌 Overview
-System Monitoring & Incident Management Dashboard adalah aplikasi web responsif berbasis Flask dan SQLite yang dirancang untuk mensimulasikan sistem pencatatan insiden dan pelaporan operasional IT. Aplikasi ini merepresentasikan praktik kerja dasar IT Operations dan IT Support dalam menangani insiden, memantau SLA, serta menghasilkan laporan operasional yang terstruktur.
+<!-- Animated Wave Header -->
+<img src="https://capsule-render.vercel.app/api?type=waving&height=210&color=0:0ea5e9,100:22c55e&text=Incident%20Monitoring%20Dashboard&fontSize=52&fontColor=ffffff&animation=fadeIn&fontAlignY=35&desc=Flask%20%7C%20SQLite%20%7C%20Incident%20Management%20%7C%20SLA%20dan%20Uptime%20Tracking&descAlignY=58" />
 
----
+<!-- Typing SVG -->
+<img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=18&duration=3000&pause=700&color=0EA5E9&center=true&vCenter=true&width=900&lines=System+Monitoring+dan+Incident+Management+Dashboard;SLA+Tracker+dan+Uptime+Calculation+with+Export+CSV;Stable+Flask+app+with+SQLite+schema+dan+validation" />
 
-## 🎯 Project Objectives
-- Menunjukkan pemahaman **incident & problem management**
-- Menerapkan konsep **SLA dan uptime tracking**
-- Menyediakan **dashboard monitoring operasional**
-- Membuat aplikasi **stabil, sederhana, dan mudah diuji**
-- Menjadi portofolio **internship-oriented & job-ready**
+<p>
+  <img src="https://img.shields.io/badge/Python-3.11+-3776ab" />
+  <img src="https://img.shields.io/badge/Flask-3.x-000000" />
+  <img src="https://img.shields.io/badge/Database-SQLite-0b5fff" />
+  <img src="https://img.shields.io/badge/Focus-IT%20Operations%20dan%20IT%20Support-22c55e" />
+</p>
 
----
-
-## 🧩 Key Features
-
-### 1. Dashboard
-- Jumlah insiden minggu berjalan
-- Ringkasan status insiden
-- Grafik sederhana berdasarkan severity
-
-### 2. Incident Management
-- Daftar insiden dengan filter:
-  - Service
-  - Severity
-  - Status
-- Form pembuatan insiden
-- Detail insiden lengkap dengan:
-  - Ringkasan masalah
-  - Root Cause Analysis (RCA)
-  - Resolution
-
-### 3. SLA Tracker
-- Input downtime per service
-- Perhitungan uptime otomatis
-- Rekap SLA bulanan
-
-### 4. Reporting
-- Export data insiden ke CSV
-- Siap digunakan untuk laporan internal
+</div>
 
 ---
 
-## 🛠️ Tech Stack
-- **Backend:** Flask (Python)
-- **Database:** SQLite
-- **Frontend:** HTML, CSS, Jinja Template
-- **Mode:** Responsive Web + PWA-ready
+## Overview
+**Incident Monitoring Dashboard** is a responsive Flask + SQLite web app that simulates an internal IT operations workflow:
+incident logging, status tracking, SLA and uptime calculation, and structured operational reporting.
+
+It is designed to be stable, easy to demonstrate, and recruiter-friendly for IT Operations and IT Support roles.
 
 ---
 
-## 🧱 Database Schema
+## Key Features
+- 📊 **Dashboard**
+  - Weekly incident count
+  - Status summary
+  - Simple severity and category breakdown
+- 🧾 **Incident Management**
+  - Create incidents with category, severity, and SLA target
+  - Filter by status and severity, plus keyword search
+  - Detail page includes RCA and resolution notes
+  - Update status with SLA breach detection when resolved
+- ⏱️ **SLA Tracker**
+  - SLA target hours per incident
+  - SLA breach tracking and compliance summary
+- 📤 **Reporting**
+  - Export incident list to CSV for operational reporting
 
-### incidents
-- `id`
-- `date`
-- `service`
-- `severity`
-- `status`
-- `summary`
-- `rca`
-- `resolution`
-- `created_at`
+---
 
-### sla_logs
-- `id`
-- `service`
-- `month`
+## Tech Stack
+- 🐍 Python (Flask)
+- 🗄️ SQLite
+- 🧩 Jinja templates, HTML, CSS
+- 🧯 Centralized error handling and input validation
+
+---
+
+## Data Model (SQLite)
+### `incidents`
+Typical fields used:
+- `title`, `description`, `category`, `severity`, `status`
+- `reported_by`, `assigned_to`
 - `downtime_minutes`
+- `root_cause`, `resolution`
+- `sla_target_hours`, `sla_breached`
+- `created_at`, `updated_at`, `resolved_at`
 
 ---
 
-## 🔐 Anti-Error Design
-- Semua route menggunakan `try/except`
-- Validasi input:
-  - Date wajib diisi
-  - Severity hanya: Low, Medium, High, Critical
-- Query sederhana (CRUD only)
-- Tidak ada join kompleks
-- Error page ramah pengguna
-- Empty state saat database kosong
+## Getting Started
+### Requirements
+- Python **3.11+**
+- (Optional) Poetry
+
+### Option A: Run with Poetry
+```bash
+poetry install
+poetry run python app.py
+```
+
+### Option B: Run with pip
+```bash
+python -m venv .venv
+# Windows PowerShell
+# .\.venv\Scripts\Activate.ps1
+# macOS / Linux
+# source .venv/bin/activate
+
+pip install flask gunicorn
+python app.py
+```
+
+The app runs on `http://localhost:5000` by default.
 
 ---
 
-## 🧪 Testing Checklist
-- [x] Tambah insiden → update status → export CSV
-- [x] Input salah → muncul pesan validasi
-- [x] Database kosong → dashboard tampil normal
-- [x] Aplikasi tetap stabil setelah refresh
+## Useful Routes
+- `/` → dashboard
+- `/incidents` → incident list (filters and search)
+- `/incidents/new` → create incident
+- `/export/csv` → export incident data to CSV
+- `/how-to-use` → usage guidance page (if available)
 
 ---
 
-## 📚 What I Learned
-- Incident & problem management workflow
-- SLA dan uptime calculation
-- Flask routing & error handling
-- SQLite schema design
-- Ops reporting & dashboard logic
+## Screenshots
+Add images into `attached_assets/` then reference them here, for example:
+- `attached_assets/dashboard.png`
+- `attached_assets/incidents.png`
+- `attached_assets/incident_detail.png`
+- `attached_assets/sla_report.png`
 
 ---
 
-## 🚀 Future Improvements
-- Autentikasi user & role
-- Grafik SLA lanjutan
-- Integrasi monitoring real-time
-- REST API backend
-- Notifikasi insiden
+## Recruiter Notes
+- ✅ Demonstrates incident lifecycle management and reporting discipline  
+- ✅ Shows SLA awareness with breach detection and compliance summary  
+- ✅ Uses simple, stable architecture suitable for internal tools  
 
 ---
 
-## 👤 Author
-**[Nama Kamu]**  
-IT Support / IT Operations / Junior Backend Developer  
-
-- GitHub: https://github.com/your-username  
-- Portfolio: https://your-portfolio-link  
-
----
-
-## 📄 License
-This project is created for educational and portfolio purposes.
-
----
-
-## 🏁 Recruiter Notes
-✔ Relevan untuk IT Ops & IT Support  
-✔ Fokus SLA & incident workflow  
-✔ Stabil dan mudah diuji  
-✔ Cocok untuk internship & entry-level roles  
+## License
+For educational and portfolio purposes.
